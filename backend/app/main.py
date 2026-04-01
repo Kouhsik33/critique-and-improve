@@ -105,9 +105,11 @@ async def run_workflow(request: RunRequest, background_tasks: BackgroundTasks):
         # Start workflow in background
         async def run_in_background():
             try:
-                await execution_service.execute(request)
+                await execution_service.execute(request, request_id=request_id)
             except Exception as e:
                 print(f"Background workflow error: {e}")
+                import traceback
+                traceback.print_exc()
         
         background_tasks.add_task(run_in_background)
         

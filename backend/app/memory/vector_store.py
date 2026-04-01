@@ -10,18 +10,17 @@ import numpy as np
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.schema import Document
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 
 
 class VectorStoreSettings(BaseSettings):
     """Vector store configuration"""
+    model_config = ConfigDict(extra="ignore", env_file=".env", case_sensitive=False)
+    
     embedding_model: str = "text-embedding-3-small"
     vector_db_path: str = os.getenv("VECTOR_DB_PATH", "./data/vector_store")
     openai_api_key: Optional[str] = None
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
 
 
 class MemoryStore:

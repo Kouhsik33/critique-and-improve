@@ -10,7 +10,8 @@ from sqlalchemy import create_engine, Column, String, Float, Integer, DateTime, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import QueuePool
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 
 Base = declarative_base()
 
@@ -30,7 +31,7 @@ class WorkflowLog(Base):
     total_tokens = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     completed_at = Column(DateTime, nullable=True)
-    metadata = Column(JSON, default={})
+    data = Column(JSON, default={})
 
 
 class AgentMetric(Base):
@@ -49,7 +50,7 @@ class AgentMetric(Base):
     latency_ms = Column(Float, default=0.0)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     output = Column(Text, nullable=True)
-    metadata = Column(JSON, default={})
+    data = Column(JSON, default={})
 
 
 class IdeaMetric(Base):
@@ -66,7 +67,7 @@ class IdeaMetric(Base):
     impact = Column(Float, default=0.0)
     fitness_score = Column(Float, default=0.0)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
-    metadata = Column(JSON, default={})
+    data = Column(JSON, default={})
 
 
 class SystemMetric(Base):
@@ -80,11 +81,13 @@ class SystemMetric(Base):
     total_token_usage = Column(Integer, default=0)
     conflict_intensity = Column(Float, default=0.0)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
-    metadata = Column(JSON, default={})
+    data = Column(JSON, default={})
 
 
 class DatabaseSettings(BaseSettings):
     """Database configuration"""
+    model_config = ConfigDict(extra="ignore", env_file=".env", case_sensitive=False)
+    
     db_host: str = os.getenv("DB_HOST", "localhost")
     db_port: int = int(os.getenv("DB_PORT", 5432))
     db_name: str = os.getenv("DB_NAME", "ai_agents")
@@ -92,10 +95,6 @@ class DatabaseSettings(BaseSettings):
     db_password: str = os.getenv("DB_PASSWORD", "postgres")
     db_pool_size: int = int(os.getenv("DB_POOL_SIZE", 10))
     db_max_overflow: int = int(os.getenv("DB_MAX_OVERFLOW", 20))
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
 
 
 class DatabaseManager:
@@ -158,7 +157,7 @@ class DatabaseManager:
                 request_id=request_id,
                 initial_prompt=initial_prompt,
                 status="running",
-                metadata=metadata or {},
+                data=metadata or {},
             )
             session.add(log)
             session.commit()
@@ -216,7 +215,7 @@ class DatabaseManager:
                 quality_score=quality_score,
                 confidence=confidence,
                 output=output,
-                metadata=metadata or {},
+                data=metadata or {},
             )
             session.add(metric)
             session.commit()
@@ -251,7 +250,7 @@ class DatabaseManager:
                 clarity=clarity,
                 impact=impact,
                 fitness_score=fitness_score,
-                metadata=metadata or {},
+                data=metadata or {},
             )
             session.add(metric)
             session.commit()
@@ -278,7 +277,7 @@ class DatabaseManager:
                 iteration_count=iteration_count,
                 total_token_usage=total_token_usage,
                 conflict_intensity=conflict_intensity,
-                metadata=metadata or {},
+                data=metadata or {},
             )
             session.add(metric)
             session.commit()

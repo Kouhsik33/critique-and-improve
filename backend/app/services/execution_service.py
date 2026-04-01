@@ -29,6 +29,7 @@ class ExecutionService:
         self,
         request: RunRequest,
         stream_callback: Optional[callable] = None,
+        request_id: Optional[str] = None,
     ) -> WorkflowState:
         """
         Execute a complete workflow with streaming.
@@ -36,12 +37,14 @@ class ExecutionService:
         Args:
             request: RunRequest with prompt and parameters
             stream_callback: Optional callback for streaming events
+            request_id: Optional request ID (will be generated if not provided)
             
         Returns:
             Final workflow state
         """
         # Initialize tracking
-        request_id = f"exec_{uuid.uuid4().hex[:12]}"
+        if not request_id:
+            request_id = f"exec_{uuid.uuid4().hex[:12]}"
         self.metrics_engine = MetricsEngine(request_id)
         
         # Log workflow start

@@ -81,7 +81,7 @@ class StateManager:
                 "total_tokens": workflow.total_tokens,
                 "created_at": workflow.created_at.isoformat(),
                 "completed_at": workflow.completed_at.isoformat() if workflow.completed_at else None,
-                "metadata": workflow.metadata,
+                "data": workflow.data,
             }
         finally:
             session.close()

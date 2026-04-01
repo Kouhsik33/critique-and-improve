@@ -1,0 +1,13 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+bin/
+include/
+lib/
+share/
+
+# Environment Variables
+.env
+.env.local
+.env.secret

@@ -7,6 +7,7 @@ import requests
 import json
 import asyncio
 import websockets
+import time
 from datetime import datetime
 
 API_BASE = "http://localhost:8000"
@@ -56,11 +57,11 @@ def test_workflow():
         "max_iterations": 3,
         "temperature": 0.7,
         "model_mapping": {
-            "creator": "gpt-3.5-turbo",
-            "critic": "gpt-3.5-turbo",
-            "radical": "gpt-3.5-turbo",
-            "synthesizer": "gpt-3.5-turbo",
-            "judge": "gpt-3.5-turbo"
+            "creator": "gpt-4.1-mini",
+            "critic": "gpt-4.1-mini",
+            "radical": "gpt-4.1-mini",
+            "synthesizer": "gpt-4.1-mini",
+            "judge": "gpt-4.1-mini"
         }
     }
     
@@ -89,20 +90,74 @@ def test_status(request_id: str):
 
 
 def test_metrics(request_id: str):
-    """Test metrics retrieval"""
-    print("\n" + "="*50)
-    print(f"Testing Metrics for {request_id}")
-    print("="*50)
+    """Test metrics retrieval with detailed agent outputs"""
+    print("\n" + "="*80)
+    print(f"DETAILED AGENT OUTPUTS & METRICS for {request_id}")
+    print("="*80)
     
     response = requests.get(f"{API_BASE}/metrics/{request_id}")
     print(f"Status: {response.status_code}")
     if response.status_code == 200:
         metrics = response.json()
-        print(f"Idea metrics count: {len(metrics.get('idea_metrics', []))}")
-        print(f"Agent metrics count: {sum(len(v) for v in metrics.get('agent_metrics', {}).values())}")
-        print(f"System metrics count: {len(metrics.get('system_metrics', []))}")
+        
+        # Display agent metrics
+        agent_metrics = metrics.get('agent_metrics', [])
+        print(f"\n📊 AGENT METRICS: {len(agent_metrics)} entries")
+        print("-" * 80)
+        
+        if agent_metrics:
+            for i, metric in enumerate(agent_metrics):
+                print(f"\n[AGENT {i+1}] {metric.get('agent', 'unknown').upper()}")
+                print(f"  • Iteration: {metric.get('iteration')}")
+                print(f"  • Action: {metric.get('action')}")
+                print(f"  • Quality Score: {metric.get('quality_score'):.2f}")
+                print(f"  • Confidence: {metric.get('confidence'):.2f}")
+                print(f"  • Tokens Used: {metric.get('token_count')}")
+                print(f"  • Latency: {metric.get('latency_ms', 0):.0f}ms")
+                
+                # Display output if available
+                output = metric.get('output')
+                if output:
+                    print(f"\n  📝 OUTPUT:")
+                    # Truncate long outputs
+                    if len(output) > 500:
+                        print(f"  {output[:500]}...")
+                    else:
+                        print(f"  {output}")
+        else:
+            print("  ⏳ No agent metrics yet (workflow still processing or failed)")
+        
+        # Display idea metrics
+        idea_metrics = metrics.get('idea_metrics', [])
+        print(f"\n\n💡 IDEA METRICS: {len(idea_metrics)} ideas")
+        print("-" * 80)
+        
+        if idea_metrics:
+            for i, idea in enumerate(idea_metrics):
+                print(f"\n[IDEA {i+1}] (Iteration {idea.get('iteration')})")
+                print(f"  📌 {idea.get('idea', 'N/A')[:150]}")
+                print(f"  • Novelty: {idea.get('novelty', 0):.2f} | Feasibility: {idea.get('feasibility', 0):.2f}")
+                print(f"  • Clarity: {idea.get('clarity', 0):.2f} | Impact: {idea.get('impact', 0):.2f}")
+                print(f"  • Fitness Score: {idea.get('fitness_score', 0):.2f}")
+        else:
+            print("  ⏳ No ideas generated yet")
+        
+        # Display system metrics
+        system_metrics = metrics.get('system_metrics', [])
+        print(f"\n\n⚙️  SYSTEM METRICS: {len(system_metrics)} entries")
+        print("-" * 80)
+        
+        if system_metrics:
+            for metric in system_metrics:
+                print(f"\n  • Iterations: {metric.get('iteration_count')}")
+                print(f"  • Total Tokens: {metric.get('total_token_usage')}")
+                print(f"  • Convergence Speed: {metric.get('convergence_speed', 'N/A')}")
+                print(f"  • Conflict Intensity: {metric.get('conflict_intensity', 0):.2f}")
+        else:
+            print("  ⏳ No system metrics yet")
     else:
-        print(f"Metrics not yet available")
+        print(f"❌ Metrics not available (Status: {response.status_code})")
+
 
 
 def test_search(workflow_id: str):
@@ -112,8 +167,7 @@ def test_search(workflow_id: str):
     print("="*50)
     
     response = requests.post(
-        f"{API_BASE}/ideas/{workflow_id}/search",
-        json={"query": "technology education"}
+        f"{API_BASE}/ideas/{workflow_id}/search?query=technology education"
     )
     print(f"Status: {response.status_code}")
     if response.status_code == 200:
@@ -178,9 +232,9 @@ def main():
         # Start workflow
         request_id = test_workflow()
         
-        # Wait a moment for workflow to start
-        import time
-        time.sleep(2)
+        # Wait for workflow to process (with retries)
+        print("\nWaiting for workflow to process...")
+        time.sleep(5)
         
         # Test status and metrics
         if request_id:

@@ -8,21 +8,20 @@ import asyncio
 from typing import Optional, Dict, Any, Callable, List
 from datetime import datetime
 import redis.asyncio as aioredis
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 
 from app.schemas.state_schema import StreamEvent, AgentAction
 
 
 class RedisSettings(BaseSettings):
     """Redis configuration"""
+    model_config = ConfigDict(extra="ignore", env_file=".env", case_sensitive=False)
+    
     redis_host: str = "localhost"
     redis_port: int = 6379
     redis_db: int = 0
     redis_password: Optional[str] = None
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
 
 
 class RedisStreamManager:

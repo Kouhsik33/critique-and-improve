@@ -1,19 +1,23 @@
 """
 LLM Configuration module.
 Allows swappable LLM models per agent without code changes.
+Supports: OpenAI, Anthropic, Google, Ollama, Hugging Face
 """
 
 import os
 from typing import Dict, Optional
 from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.base_language import BaseLanguageModel
+import requests
 
 
 class LLMSettings(BaseSettings):
     """LLM configuration from environment"""
+    model_config = ConfigDict(extra="ignore", env_file=".env", case_sensitive=False)
     
     # OpenAI
     openai_api_key: Optional[str] = None
@@ -25,12 +29,34 @@ class LLMSettings(BaseSettings):
     # Google
     google_api_key: Optional[str] = None
     
-    # Default model preferences
-    creator_model: str = "gpt-4-turbo"
-    critic_model: str = "gpt-4-turbo"
-    radical_model: str = "gpt-4"
-    synthesizer_model: str = "gpt-3.5-turbo"
-    judge_model: str = "gpt-4"
+    # Ollama (local)
+    ollama_base_url: str = "http://localhost:11434/v1"
+    
+    # Hugging Face - Global fallback
+    hf_token: Optional[str] = None
+    
+    # Per-Agent Hugging Face Configuration
+    creator_hf_model: Optional[str] = None
+    creator_hf_token: Optional[str] = None
+    
+    critic_hf_model: Optional[str] = None
+    critic_hf_token: Optional[str] = None
+    
+    radical_hf_model: Optional[str] = None
+    radical_hf_token: Optional[str] = None
+    
+    synthesizer_hf_model: Optional[str] = None
+    synthesizer_hf_token: Optional[str] = None
+    
+    judge_hf_model: Optional[str] = None
+    judge_hf_token: Optional[str] = None
+    
+    # Default model preferences (using free models)
+    creator_model: str = "ollama-llama2"
+    critic_model: str = "hf-qwen"
+    radical_model: str = "ollama-mistral"
+    synthesizer_model: str = "hf-qwen"
+    judge_model: str = "gemini-pro"
     
     # Temperature settings
     creator_temperature: float = 0.8
@@ -41,10 +67,6 @@ class LLMSettings(BaseSettings):
     
     # Model max tokens
     max_tokens: int = 2000
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
 
 
 class LLMFactory:
@@ -69,18 +91,20 @@ class LLMFactory:
         return cls._settings
     
     @classmethod
-    def get_llm(cls, model_name: str, temperature: float = 0.7) -> BaseLanguageModel:
+    def get_llm(cls, model_name: str, temperature: float = 0.7, agent_name: str = None) -> BaseLanguageModel:
         """
         Get or create an LLM instance.
+        Supports: Ollama, Hugging Face, Google Gemini, OpenAI, Anthropic
         
         Args:
-            model_name: Model identifier (e.g., "gpt-4-turbo", "claude-3", "gemini-pro")
+            model_name: Model identifier (e.g., "ollama-llama2", "hf-qwen", "gemini-pro", "gpt-4")
             temperature: Model temperature
+            agent_name: Agent name for per-agent HF configuration (creator, critic, radical, etc.)
             
         Returns:
             BaseLanguageModel instance
         """
-        cache_key = f"{model_name}_{temperature}"
+        cache_key = f"{model_name}_{temperature}_{agent_name or ''}"
         
         if cache_key in cls._llm_cache:
             return cls._llm_cache[cache_key]
@@ -88,8 +112,54 @@ class LLMFactory:
         settings = cls.get_settings()
         llm = None
         
-        if model_name.startswith("gpt") or model_name.startswith("text-davinci"):
-            # OpenAI models
+        # Ollama (local models)
+        if model_name.startswith("ollama-"):
+            actual_model = model_name.replace("ollama-", "")
+            llm = ChatOpenAI(
+                model_name=actual_model,
+                temperature=temperature,
+                api_key="ollama",
+                base_url=settings.ollama_base_url,
+                max_tokens=settings.max_tokens,
+            )
+        
+        # Hugging Face Qwen
+        elif model_name.startswith("hf-"):
+            from langchain_community.llms import HuggingFaceHub
+            
+            # Get per-agent HF config if available
+            hf_model = None
+            hf_token = None
+            
+            if agent_name:
+                # Try to get agent-specific config
+                agent_model_attr = f"{agent_name}_hf_model"
+                agent_token_attr = f"{agent_name}_hf_token"
+                hf_model = getattr(settings, agent_model_attr, None)
+                hf_token = getattr(settings, agent_token_attr, None)
+            
+            # Fall back to global config if not set per-agent
+            if not hf_model:
+                hf_model = "Qwen/Qwen1.5-7B-Chat"  # default
+            if not hf_token:
+                hf_token = settings.hf_token  # use global token as fallback
+            
+            llm = HuggingFaceHub(
+                repo_id=hf_model,
+                huggingfacehub_api_token=hf_token,
+                model_kwargs={"temperature": temperature, "max_new_tokens": settings.max_tokens}
+            )
+        
+        # Google Gemini
+        elif model_name.startswith("gemini"):
+            llm = ChatGoogleGenerativeAI(
+                model=model_name,
+                temperature=temperature,
+                google_api_key=settings.google_api_key,
+            )
+        
+        # OpenAI models
+        elif model_name.startswith("gpt") or model_name.startswith("text-davinci"):
             llm = ChatOpenAI(
                 model_name=model_name,
                 temperature=temperature,
@@ -97,21 +167,16 @@ class LLMFactory:
                 base_url=settings.openai_base_url,
                 max_tokens=settings.max_tokens,
             )
+        
+        # Anthropic models
         elif model_name.startswith("claude"):
-            # Anthropic models
             llm = ChatAnthropic(
                 model=model_name,
                 temperature=temperature,
                 api_key=settings.anthropic_api_key,
                 max_tokens=settings.max_tokens,
             )
-        elif model_name.startswith("gemini"):
-            # Google Generative AI models
-            llm = ChatGoogleGenerativeAI(
-                model=model_name,
-                temperature=temperature,
-                google_api_key=settings.google_api_key,
-            )
+        
         else:
             raise ValueError(f"Unsupported model: {model_name}")
         
@@ -147,7 +212,7 @@ class LLMFactory:
         temp_attr = f"{agent_name}_temperature"
         temperature = getattr(settings, temp_attr, 0.7)
         
-        return cls.get_llm(model_name, temperature)
+        return cls.get_llm(model_name, temperature, agent_name)
     
     @classmethod
     def update_model_mapping(cls, agent_name: str, model_name: str):
