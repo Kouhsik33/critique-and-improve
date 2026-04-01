@@ -85,7 +85,14 @@ class WorkflowOrchestrator:
         state.current_idea = output.content
         state.total_tokens += output.token_count
         
-        return {"state": state}
+        self.memory.add_idea(
+            idea=output.content,
+            workflow_id=state.request_id,
+            iteration=state.iteration,
+            agent="creator"
+        )
+        
+        return state.model_dump()
     
     async def _critic_node(self, state: WorkflowState) -> Dict[str, Any]:
         """Critic node"""
@@ -98,7 +105,15 @@ class WorkflowOrchestrator:
         state.critiques.append(output.content)
         state.total_tokens += output.token_count
         
-        return {"state": state}
+        self.memory.add_critique(
+            critique=output.content,
+            workflow_id=state.request_id,
+            iteration=state.iteration,
+            severity=0.8,
+            category="general"
+        )
+        
+        return state.model_dump()
     
     async def _radical_node(self, state: WorkflowState) -> Dict[str, Any]:
         """Radical node"""
@@ -114,7 +129,14 @@ class WorkflowOrchestrator:
         state.radical_ideas.append(output.content)
         state.total_tokens += output.token_count
         
-        return {"state": state}
+        self.memory.add_idea(
+            idea=output.content,
+            workflow_id=state.request_id,
+            iteration=state.iteration,
+            agent="radical"
+        )
+        
+        return state.model_dump()
     
     async def _synthesizer_node(self, state: WorkflowState) -> Dict[str, Any]:
         """Synthesizer node"""
@@ -133,7 +155,14 @@ class WorkflowOrchestrator:
         state.current_idea = output.content
         state.total_tokens += output.token_count
         
-        return {"state": state}
+        self.memory.add_idea(
+            idea=output.content,
+            workflow_id=state.request_id,
+            iteration=state.iteration,
+            agent="synthesizer"
+        )
+        
+        return state.model_dump()
     
     async def _judge_node(self, state: WorkflowState) -> Dict[str, Any]:
         """Judge node"""
@@ -158,22 +187,40 @@ class WorkflowOrchestrator:
         
         state.scores["judge"] = 0.85  # Judge confidence
         
-        return {"state": state}
+        return state.model_dump()
     
     def _iterate_decision_node(self, state: WorkflowState) -> Dict[str, Any]:
         """Decision node for iteration"""
-        return {"state": state}
+        return state.model_dump()
     
     def _should_iterate(self, state: WorkflowState) -> str:
         """Determine if workflow should iterate"""
+        # LangGraph may pass a raw dict during conditional routing
+        if isinstance(state, dict):
+            iteration = state.get("iteration")
+            max_iterations = state.get("max_iterations")
+            feedback = state.get("feedback")
+            if iteration is None or max_iterations is None:
+                return "done"
+            if not feedback:
+                return "done"
+            if isinstance(feedback, dict):
+                should_iterate = bool(feedback.get("should_iterate"))
+            else:
+                try:
+                    should_iterate = bool(feedback.should_iterate)
+                except Exception:
+                    should_iterate = False
+            return "iterate" if should_iterate and iteration < max_iterations else "done"
+
         if not state.feedback:
             return "done"
-        
+
         should_iterate = (
             state.feedback.should_iterate
             and state.iteration < state.max_iterations
         )
-        
+
         return "iterate" if should_iterate else "done"
     
     async def run(
@@ -199,8 +246,8 @@ class WorkflowOrchestrator:
         
         # Run workflow
         try:
-            result = await self.graph.ainvoke({"state": state})
-            final_state = result.get("state", state)
+            result = await self.graph.ainvoke(state.model_dump())
+            final_state = WorkflowState(**result)
         except Exception as e:
             print(f"Workflow error: {e}")
             final_state = state

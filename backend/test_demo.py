@@ -8,6 +8,7 @@ import json
 import asyncio
 import websockets
 import time
+from typing import Tuple, Optional
 from datetime import datetime
 
 API_BASE = "http://localhost:8000"
@@ -57,11 +58,11 @@ def test_workflow():
         "max_iterations": 3,
         "temperature": 0.7,
         "model_mapping": {
-            "creator": "gpt-4.1-mini",
-            "critic": "gpt-4.1-mini",
-            "radical": "gpt-4.1-mini",
-            "synthesizer": "gpt-4.1-mini",
-            "judge": "gpt-4.1-mini"
+            "creator": "gpt-4o-mini",
+            "critic": "gpt-4o-mini",
+            "radical": "gpt-4o-mini",
+            "synthesizer": "gpt-4o-mini",
+            "judge": "gpt-4o-mini"
         }
     }
     
@@ -189,10 +190,10 @@ def test_evolution(workflow_id: str):
             print(f"  [{i}] Type: {item.get('type')}, Iteration: {item.get('iteration')}")
 
 
-async def test_websocket(request_id: str):
-    """Test WebSocket streaming"""
+async def stream_websocket(request_id: str, duration: int = 30):
+    """Stream WebSocket events for a fixed duration (seconds)"""
     print("\n" + "="*50)
-    print(f"Testing WebSocket for {request_id}")
+    print(f"Streaming WebSocket for {request_id} ({duration}s)")
     print("="*50)
     
     ws_url = f"ws://localhost:8000/stream/{request_id}"
@@ -200,19 +201,48 @@ async def test_websocket(request_id: str):
     try:
         async with websockets.connect(ws_url) as websocket:
             print("Connected to WebSocket")
-            
-            # Send ping
-            await websocket.send("ping")
-            
-            # Wait for pong (with timeout)
-            try:
-                response = await asyncio.wait_for(websocket.recv(), timeout=5)
-                data = json.loads(response)
-                print(f"Received: {data['type']}")
-            except asyncio.TimeoutError:
-                print("WebSocket connection established but no events yet")
+
+            end_time = time.time() + duration
+            while time.time() < end_time:
+                try:
+                    response = await asyncio.wait_for(websocket.recv(), timeout=5)
+                    data = json.loads(response)
+                    event_type = data.get("type", "unknown")
+                    agent = data.get("agent", "unknown")
+                    action = data.get("action", "unknown")
+                    iteration = data.get("iteration", "?")
+                    print(f"[{event_type}] {agent}::{action} (iter {iteration})")
+
+                    output = data.get("data", {}).get("output")
+                    if output:
+                        preview = output[:200] + ("..." if len(output) > 200 else "")
+                        print(f"  output: {preview}")
+
+                    if event_type == "workflow_complete":
+                        break
+                except asyncio.TimeoutError:
+                    await websocket.send("ping")
     except Exception as e:
         print(f"WebSocket connection failed (expected if workflow not running): {e}")
+
+
+def wait_for_completion(request_id: str, timeout: int = 120, interval: int = 5) -> Tuple[str, Optional[dict]]:
+    """Poll workflow status until completed/failed or timeout"""
+    start = time.time()
+    last_payload = None
+    while time.time() - start < timeout:
+        response = requests.get(f"{API_BASE}/status/{request_id}")
+        if response.status_code == 200:
+            payload = response.json()
+            last_payload = payload
+            status = payload.get("status")
+            if status in ("completed", "failed"):
+                return status, payload
+            print(f"  ⏳ Workflow still {status}... waiting {interval}s")
+        else:
+            print("  ⚠️  Status not ready yet")
+        time.sleep(interval)
+    return "timeout", last_payload
 
 
 def main():
@@ -232,9 +262,17 @@ def main():
         # Start workflow
         request_id = test_workflow()
         
-        # Wait for workflow to process (with retries)
+        # Stream live events while workflow runs
+        if request_id:
+            asyncio.run(stream_websocket(request_id, duration=30))
+
+        # Wait for workflow to complete
         print("\nWaiting for workflow to process...")
-        time.sleep(5)
+        if request_id:
+            status, payload = wait_for_completion(request_id, timeout=120, interval=5)
+            print(f"Final status: {status}")
+            if payload:
+                print(f"Completed at: {payload.get('completed_at')}")
         
         # Test status and metrics
         if request_id:
@@ -242,9 +280,6 @@ def main():
             test_metrics(request_id)
             test_search(request_id)
             test_evolution(request_id)
-            
-            # Test WebSocket
-            asyncio.run(test_websocket(request_id))
         
         print("\n" + "="*50)
         print("✓ Test suite completed")

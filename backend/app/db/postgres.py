@@ -265,6 +265,7 @@ class DatabaseManager:
         iteration_count: int = 0,
         total_token_usage: int = 0,
         conflict_intensity: float = 0.0,
+        convergence_speed: float = None,
         metadata: Dict[str, Any] = None,
     ) -> SystemMetric:
         """Log system-level metrics"""
@@ -275,6 +276,7 @@ class DatabaseManager:
                 id=str(uuid.uuid4()),
                 workflow_id=workflow_id,
                 iteration_count=iteration_count,
+                convergence_speed=convergence_speed,
                 total_token_usage=total_token_usage,
                 conflict_intensity=conflict_intensity,
                 data=metadata or {},
@@ -297,34 +299,38 @@ class DatabaseManager:
             return {
                 "agent_metrics": [
                     {
-                        "agent": m.agent,
-                        "iteration": m.iteration,
-                        "action": m.action,
-                        "token_count": m.token_count,
-                        "quality_score": m.quality_score,
-                        "confidence": m.confidence,
-                    }
-                    for m in agent_metrics
-                ],
-                "idea_metrics": [
-                    {
-                        "iteration": m.iteration,
-                        "novelty": m.novelty,
-                        "feasibility": m.feasibility,
-                        "clarity": m.clarity,
-                        "impact": m.impact,
+                "agent": m.agent,
+                "iteration": m.iteration,
+                "action": m.action,
+                "token_count": m.token_count,
+                "quality_score": m.quality_score,
+                "confidence": m.confidence,
+                "latency_ms": m.latency_ms,
+                "output": m.output,
+            }
+            for m in agent_metrics
+        ],
+        "idea_metrics": [
+            {
+                "iteration": m.iteration,
+                "idea": m.idea,
+                "novelty": m.novelty,
+                "feasibility": m.feasibility,
+                "clarity": m.clarity,
+                "impact": m.impact,
                         "fitness_score": m.fitness_score,
                     }
                     for m in idea_metrics
                 ],
                 "system_metrics": [
                     {
-                        "iteration_count": m.iteration_count,
-                        "total_token_usage": m.total_token_usage,
-                        "conflict_intensity": m.conflict_intensity,
-                    }
-                    for m in system_metrics
-                ],
+                "iteration_count": m.iteration_count,
+                "convergence_speed": m.convergence_speed,
+                "total_token_usage": m.total_token_usage,
+                "conflict_intensity": m.conflict_intensity,
+            }
+            for m in system_metrics
+        ],
             }
         finally:
             session.close()

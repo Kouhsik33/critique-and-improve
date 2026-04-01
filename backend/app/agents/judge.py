@@ -3,6 +3,7 @@ Judge Agent - Evaluates and decides whether to accept or iterate.
 """
 
 from typing import Dict, Any, Optional, List
+import json
 from datetime import datetime
 
 from app.agents.base_agent import BaseAgent
@@ -151,7 +152,7 @@ Format your response as structured JSON."""
             agent="judge",
             action=AgentAction.JUDGE,
             content=content,
-            reasoning=str(feedback.dict()),
+            reasoning=json.dumps(feedback.dict()),
             timestamp=datetime.utcnow(),
             token_count=token_count,
             confidence=0.85,

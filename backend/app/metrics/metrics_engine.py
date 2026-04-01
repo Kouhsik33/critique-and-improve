@@ -330,6 +330,7 @@ class MetricsEngine:
             iteration_count=iteration_count,
             total_token_usage=total_tokens,
             conflict_intensity=self.system_metrics.conflict_intensity,
+            convergence_speed=self.system_metrics.convergence_speed,
         )
     
     def get_summary(self) -> Dict[str, Any]:

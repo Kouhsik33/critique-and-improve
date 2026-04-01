@@ -42,11 +42,11 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       
       # Models
-      CREATOR_MODEL: gpt-4-turbo
-      CRITIC_MODEL: gpt-4-turbo
-      RADICAL_MODEL: gpt-4
-      SYNTHESIZER_MODEL: gpt-3.5-turbo
-      JUDGE_MODEL: gpt-4
+      CREATOR_MODEL: gpt-4.1-mini
+      CRITIC_MODEL: gpt-4.1-mini
+      RADICAL_MODEL: gpt-4.1-mini
+      SYNTHESIZER_MODEL: gpt-4.1-mini
+      JUDGE_MODEL: gpt-4.1-mini
       
       # Database
       DB_HOST: postgres
