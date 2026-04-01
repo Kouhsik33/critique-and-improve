@@ -7,6 +7,7 @@ langgraph==0.0.20
 langchain-openai==0.1.1
 langchain-anthropic==0.1.8
 langchain-google-genai==0.0.11
+langchain-groq==0.1.2
 langchain-community==0.0.25
 langsmith>=0.1.0,<0.2.0
 redis==5.0.1

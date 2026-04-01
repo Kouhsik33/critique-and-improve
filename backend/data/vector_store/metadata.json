@@ -121,5 +121,92 @@
     "workflow_id": "run_62cf1484e943",
     "iteration": 0,
     "agent": "synthesizer"
+  },
+  "run_07a968037ef7_idea_0_creator": {
+    "doc_id": "run_07a968037ef7_idea_0_creator",
+    "type": "idea",
+    "workflow_id": "run_07a968037ef7",
+    "iteration": 0,
+    "agent": "creator"
+  },
+  "run_07a968037ef7_critique_0_general": {
+    "doc_id": "run_07a968037ef7_critique_0_general",
+    "type": "critique",
+    "workflow_id": "run_07a968037ef7",
+    "iteration": 0,
+    "severity": 0.8,
+    "category": "general"
+  },
+  "run_07a968037ef7_idea_0_radical": {
+    "doc_id": "run_07a968037ef7_idea_0_radical",
+    "type": "idea",
+    "workflow_id": "run_07a968037ef7",
+    "iteration": 0,
+    "agent": "radical"
+  },
+  "run_07a968037ef7_idea_0_synthesizer": {
+    "doc_id": "run_07a968037ef7_idea_0_synthesizer",
+    "type": "idea",
+    "workflow_id": "run_07a968037ef7",
+    "iteration": 0,
+    "agent": "synthesizer"
+  },
+  "run_adc52d7a5561_idea_0_creator": {
+    "doc_id": "run_adc52d7a5561_idea_0_creator",
+    "type": "idea",
+    "workflow_id": "run_adc52d7a5561",
+    "iteration": 0,
+    "agent": "creator"
+  },
+  "run_adc52d7a5561_critique_0_general": {
+    "doc_id": "run_adc52d7a5561_critique_0_general",
+    "type": "critique",
+    "workflow_id": "run_adc52d7a5561",
+    "iteration": 0,
+    "severity": 0.8,
+    "category": "general"
+  },
+  "run_adc52d7a5561_idea_0_radical": {
+    "doc_id": "run_adc52d7a5561_idea_0_radical",
+    "type": "idea",
+    "workflow_id": "run_adc52d7a5561",
+    "iteration": 0,
+    "agent": "radical"
+  },
+  "run_adc52d7a5561_idea_0_synthesizer": {
+    "doc_id": "run_adc52d7a5561_idea_0_synthesizer",
+    "type": "idea",
+    "workflow_id": "run_adc52d7a5561",
+    "iteration": 0,
+    "agent": "synthesizer"
+  },
+  "run_33e4f1975371_idea_0_creator": {
+    "doc_id": "run_33e4f1975371_idea_0_creator",
+    "type": "idea",
+    "workflow_id": "run_33e4f1975371",
+    "iteration": 0,
+    "agent": "creator"
+  },
+  "run_33e4f1975371_critique_0_general": {
+    "doc_id": "run_33e4f1975371_critique_0_general",
+    "type": "critique",
+    "workflow_id": "run_33e4f1975371",
+    "iteration": 0,
+    "severity": 0.8,
+    "category": "general"
+  },
+  "run_33e4f1975371_idea_0_radical": {
+    "doc_id": "run_33e4f1975371_idea_0_radical",
+    "type": "idea",
+    "workflow_id": "run_33e4f1975371",
+    "iteration": 0,
+    "agent": "radical"
+  },
+  "run_33e4f1975371_idea_0_synthesizer": {
+    "doc_id": "run_33e4f1975371_idea_0_synthesizer",
+    "type": "idea",
+    "workflow_id": "run_33e4f1975371",
+    "iteration": 0,
+    "agent": "synthesizer"
   }
 }

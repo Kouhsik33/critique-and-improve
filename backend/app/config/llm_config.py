@@ -1,7 +1,7 @@
 """
 LLM Configuration module.
 Allows swappable LLM models per agent without code changes.
-Supports: OpenAI, Anthropic, Google, Ollama, Hugging Face
+Supports: OpenAI, Anthropic, Google, Groq, Ollama, Hugging Face
 """
 
 import os
@@ -28,6 +28,10 @@ class LLMSettings(BaseSettings):
     
     # Google
     google_api_key: Optional[str] = None
+    gemini_api_key: Optional[str] = None
+    
+    # Groq
+    groq_api_key: Optional[str] = None
     
     # Ollama (local)
     ollama_base_url: str = "http://localhost:11434/v1"
@@ -51,12 +55,12 @@ class LLMSettings(BaseSettings):
     judge_hf_model: Optional[str] = None
     judge_hf_token: Optional[str] = None
     
-    # Default model preferences (using free models)
-    creator_model: str = "ollama-llama2"
-    critic_model: str = "hf-qwen"
-    radical_model: str = "ollama-mistral"
-    synthesizer_model: str = "hf-qwen"
-    judge_model: str = "gemini-pro"
+    # Default model preferences (mixed providers)
+    creator_model: str = "groq-llama-3.1-8b-instant"
+    critic_model: str = "groq-llama-3.1-8b-instant"
+    radical_model: str = "groq-llama-3.1-8b-instant"
+    synthesizer_model: str = "gpt-4.1-mini"
+    judge_model: str = "gemini-2.5-flash"
     
     # Temperature settings
     creator_temperature: float = 0.8
@@ -94,7 +98,7 @@ class LLMFactory:
     def get_llm(cls, model_name: str, temperature: float = 0.7, agent_name: str = None) -> BaseLanguageModel:
         """
         Get or create an LLM instance.
-        Supports: Ollama, Hugging Face, Google Gemini, OpenAI, Anthropic
+        Supports: Ollama, Hugging Face, Google Gemini, Groq, OpenAI, Anthropic
         
         Args:
             model_name: Model identifier (e.g., "ollama-llama2", "hf-qwen", "gemini-pro", "gpt-4")
@@ -152,10 +156,23 @@ class LLMFactory:
         
         # Google Gemini
         elif model_name.startswith("gemini"):
+            api_key = settings.google_api_key or settings.gemini_api_key
             llm = ChatGoogleGenerativeAI(
                 model=model_name,
                 temperature=temperature,
-                google_api_key=settings.google_api_key,
+                google_api_key=api_key,
+                convert_system_message_to_human=True,
+            )
+        
+        # Groq
+        elif model_name.startswith("groq-"):
+            from langchain_groq import ChatGroq
+            actual_model = model_name.replace("groq-", "")
+            llm = ChatGroq(
+                model_name=actual_model,
+                temperature=temperature,
+                groq_api_key=settings.groq_api_key,
+                max_tokens=settings.max_tokens,
             )
         
         # OpenAI models

@@ -58,11 +58,11 @@ def test_workflow():
         "max_iterations": 3,
         "temperature": 0.7,
         "model_mapping": {
-            "creator": "gpt-4o-mini",
-            "critic": "gpt-4o-mini",
-            "radical": "gpt-4o-mini",
-            "synthesizer": "gpt-4o-mini",
-            "judge": "gpt-4o-mini"
+            "creator": "groq-llama-3.1-8b-instant",
+            "critic": "groq-llama-3.1-8b-instant",
+            "radical": "groq-llama-3.1-8b-instant",
+            "synthesizer": "gpt-4.1-mini",
+            "judge": "gemini-2.5-flash"
         }
     }
     
