@@ -1,0 +1,283 @@
+/* ═══════════════════════════════════════════════
+   ARENA STAGE  ·  Agents (left) + Graph (right)
+   Side-by-side with absolute positioning container
+   ═══════════════════════════════════════════════ */
+
+.arena-stage {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 12px; /* Increased gap to push graph aside */
+  min-height: 420px; /* Reduced from 520px */
+  height: min(50vh, 580px); /* Reduced from 65vh / 740px */
+}
+
+/* ── Left: Agent bars column ── */
+.arena-agents {
+  position: relative;
+  z-index: 2;
+  width: 180px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding-right: 0;
+}
+
+/* ── Right: Graph capsule ── */
+.arena-graph {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: var(--shadow), inset 0 1px 0 var(--shimmer-white);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slide-in-up 0.35s ease both;
+
+  /* Deeply curved capsule shape for premium feel */
+  border-radius: 400px 30px 30px 400px;
+  margin-left: -42px; /* Pull it slightly less into the sidebar */
+
+  transition:
+    background   0.45s ease,
+    border-color 0.35s ease,
+    box-shadow   0.40s ease;
+}
+
+.arena-graph-header {
+  padding: 16px 24px 16px 148px; /* Increased padding to clear the 400px radius curve */
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel-header);
+  transition:
+    background   0.35s ease,
+    border-color 0.35s ease;
+}
+
+.arena-graph-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.arena-graph-body {
+  flex: 1;
+  min-height: 0;
+  padding: 8px 16px 16px 110px; /* Increased body padding to align with header */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arena-graph-body > * {
+  width: 100%;
+  height: 100%;
+}
+
+/* ═══════════════════════════════════════════════
+   AGENT STACK  ·  Vertical bar layout (left column)
+   ═══════════════════════════════════════════════ */
+
+.agent-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.agent-stack-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Individual agent bar ── */
+.agent-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--pill-bg);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition:
+    border-color 0.24s ease,
+    box-shadow   0.24s ease,
+    background   0.24s ease,
+    transform    0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Curvature Alignment: Positioning agents along the graph's arc */
+.agent-bar:nth-child(1) { transform: translateX(38px); }
+.agent-bar:nth-child(2) { transform: translateX(12px); }
+.agent-bar:nth-child(3) { transform: translateX(0px);  }
+.agent-bar:nth-child(4) { transform: translateX(12px); }
+.agent-bar:nth-child(5) { transform: translateX(38px); }
+
+/* Shimmer on hover */
+.agent-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--shimmer-white), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+.agent-bar:hover::after { transform: translateX(100%); }
+
+.agent-bar-icon {
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.agent-bar-label {
+  font-size: var(--text-sm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  flex: 1;
+}
+
+.agent-bar-node {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ── Per-agent colours ── */
+.agent-bar.generate {
+  border-color: color-mix(in srgb, var(--accent-cyan) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-cyan) 5%,  transparent);
+}
+.agent-bar.generate .agent-bar-label,
+.agent-bar.generate .agent-bar-icon,
+.agent-bar.generate .agent-bar-node { color: var(--accent-cyan); }
+
+.agent-bar.attack {
+  border-color: color-mix(in srgb, var(--accent-coral) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-coral) 5%,  transparent);
+}
+.agent-bar.attack .agent-bar-label,
+.agent-bar.attack .agent-bar-icon,
+.agent-bar.attack .agent-bar-node { color: var(--accent-coral); }
+
+.agent-bar.disrupt {
+  border-color: color-mix(in srgb, var(--accent-gold) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-gold) 5%,  transparent);
+}
+.agent-bar.disrupt .agent-bar-label,
+.agent-bar.disrupt .agent-bar-icon,
+.agent-bar.disrupt .agent-bar-node { color: var(--accent-gold); }
+
+.agent-bar.merge {
+  border-color: color-mix(in srgb, var(--accent-emerald) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-emerald) 5%, transparent);
+}
+.agent-bar.merge .agent-bar-label,
+.agent-bar.merge .agent-bar-icon,
+.agent-bar.merge .agent-bar-node { color: var(--accent-emerald); }
+
+.agent-bar.judge {
+  border-color: color-mix(in srgb, var(--accent-lavender) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-lavender) 5%, transparent);
+}
+.agent-bar.judge .agent-bar-label,
+.agent-bar.judge .agent-bar-icon,
+.agent-bar.judge .agent-bar-node { color: var(--accent-lavender); }
+
+/* ── Active states with glow ── */
+.agent-bar.active { 
+  /* Combined base offset + active nudge */
+  z-index: 10;
+}
+
+.agent-bar:nth-child(1).active { transform: translateX(calc(38px + 8px)); }
+.agent-bar:nth-child(2).active { transform: translateX(calc(12px + 8px)); }
+.agent-bar:nth-child(3).active { transform: translateX(calc(0px + 8px)); }
+.agent-bar:nth-child(4).active { transform: translateX(calc(12px + 8px)); }
+.agent-bar:nth-child(5).active { transform: translateX(calc(38px + 8px)); }
+
+.agent-bar.generate.active {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-cyan) 12%, transparent), var(--glow-cyan);
+  background: color-mix(in srgb, var(--accent-cyan) 12%, transparent);
+  animation: pulse-glow-cyan 2s ease-in-out infinite;
+}
+.agent-bar.attack.active {
+  border-color: var(--accent-coral);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-coral) 12%, transparent), var(--glow-coral);
+  background: color-mix(in srgb, var(--accent-coral) 12%, transparent);
+  animation: pulse-glow-coral 2s ease-in-out infinite;
+}
+.agent-bar.disrupt.active {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-gold) 12%, transparent), var(--glow-gold);
+  background: color-mix(in srgb, var(--accent-gold) 12%, transparent);
+  animation: pulse-glow-gold 2s ease-in-out infinite;
+}
+.agent-bar.merge.active {
+  border-color: var(--accent-emerald);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-emerald) 12%, transparent), var(--glow-emerald);
+  background: color-mix(in srgb, var(--accent-emerald) 12%, transparent);
+  animation: pulse-glow-emerald 2s ease-in-out infinite;
+}
+.agent-bar.judge.active {
+  border-color: var(--accent-lavender);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-lavender) 12%, transparent), var(--glow-violet);
+  background: color-mix(in srgb, var(--accent-lavender) 12%, transparent);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE — Stack vertically on narrow screens
+   ═══════════════════════════════════════════════ */
+@media (max-width: 860px) {
+  .arena-stage {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+  }
+
+  .arena-agents {
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .arena-graph {
+    margin-left: 0;
+    border-radius: var(--radius);
+    min-height: 420px;
+  }
+
+  .arena-graph-header {
+    padding-left: 20px;
+  }
+
+  .arena-graph-body {
+    padding-left: 12px;
+  }
+
+  .agent-stack-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .agent-bar:nth-child(n) { transform: none; }
+  .agent-bar.active { transform: translateY(-2px); }
+  .agent-bar:nth-child(n).active { transform: translateY(-2px); }
+}

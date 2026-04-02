@@ -1,0 +1,130 @@
+/* ═══════════════════════════════════════════════
+   PANEL  ·  Panel, panel-header, grids, tags, dots
+   ═══════════════════════════════════════════════ */
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: var(--shadow), inset 0 1px 0 var(--shimmer-white);
+  overflow: hidden;
+  min-height: 0;
+  animation: slide-in-up 0.35s ease both;
+  transition:
+    background   0.45s ease,
+    border-color 0.35s ease,
+    box-shadow   0.40s ease;
+}
+
+/* Glass refraction shimmer overlay */
+.panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, var(--shimmer-white) 50%, transparent 60%);
+  background-size: 300% 100%;
+  animation: glass-refract 12s linear infinite;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.panel-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel-header);
+  position: relative;
+  transition:
+    background   0.35s ease,
+    border-color 0.35s ease;
+}
+
+/* Gradient left accent stripe */
+.panel-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent-cyan), var(--accent));
+  border-radius: 0 2px 2px 0;
+}
+
+.panel-title {
+  font-size: var(--text-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 700;
+  transition: color 0.35s ease;
+}
+
+.panel-body {
+  padding: 14px 16px;
+  min-height: 0;
+}
+
+/* ── Grid helpers ── */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  min-height: 0;
+}
+
+.grid-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.scroll {
+  overflow: auto;
+  padding-right: 4px;
+}
+
+/* ── Tags & Dots ── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--tag-bg);
+  font-size: var(--text-xs);
+  backdrop-filter: blur(8px);
+  transition:
+    background   0.35s ease,
+    border-color 0.35s ease;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dot-default);
+  flex-shrink: 0;
+  transition: background 0.35s ease;
+}
+
+.dot.red     { background: var(--accent-coral);   }
+.dot.blue    { background: var(--accent-cyan);    }
+.dot.green   { background: var(--accent-emerald); }
+.dot.amber   { background: var(--accent-gold);    }
+.dot.purple  { background: var(--accent-lavender);}
+
+/* Animated pulse dot */
+.dot.pulse        { animation: dot-pulse 1.6s ease-in-out infinite; }
+.dot.red.pulse    { box-shadow: 0 0 6px var(--accent-coral); }
+.dot.blue.pulse   { box-shadow: 0 0 6px var(--accent-cyan); }
+.dot.green.pulse  { box-shadow: 0 0 6px var(--accent-emerald); }
+.dot.amber.pulse  { box-shadow: 0 0 6px var(--accent-gold); }
+.dot.purple.pulse { box-shadow: 0 0 6px var(--accent-lavender); }

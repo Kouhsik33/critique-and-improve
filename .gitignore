@@ -1,0 +1,8 @@
+﻿.env
+frontend/.env
+backend/.env
+.env*
+node_modules/
+*.log
+__pycache__/
+.DS_Store

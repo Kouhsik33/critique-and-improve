@@ -1,0 +1,50 @@
+/* ═══════════════════════════════════════════════
+   IDEA GRAPH  ·  Graph stage, node modal
+   ═══════════════════════════════════════════════ */
+
+.graph-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+.graph-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Node popup modal */
+.graph-node-modal {
+  position: absolute;
+  z-index: 5;
+  width: min(320px, calc(100% - 32px));
+  max-height: 240px;
+  overflow: auto;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-focus);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-lg), var(--glow-violet);
+  backdrop-filter: blur(16px);
+  animation: slide-in-up 0.2s ease;
+  transition:
+    background   0.35s ease,
+    border-color 0.35s ease,
+    box-shadow   0.35s ease;
+}
+
+.graph-node-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: var(--text-sm);
+}
+
+.graph-node-modal-body {
+  font-size: 13px;
+  line-height: var(--line-height);
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}

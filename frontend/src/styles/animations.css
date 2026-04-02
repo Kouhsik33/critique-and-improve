@@ -1,0 +1,99 @@
+/* ═══════════════════════════════════════════════
+   KEYFRAME ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+/* ── Pulse glows (per-agent) ── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.50); }
+  50%       { box-shadow: 0 0 0 7px rgba(108, 99, 255, 0); }
+}
+@keyframes pulse-glow-cyan {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.50); }
+  50%       { box-shadow: 0 0 0 7px rgba(0, 212, 255, 0); }
+}
+@keyframes pulse-glow-coral {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.50); }
+  50%       { box-shadow: 0 0 0 7px rgba(255, 107, 107, 0); }
+}
+@keyframes pulse-glow-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 179, 71, 0.50); }
+  50%       { box-shadow: 0 0 0 7px rgba(255, 179, 71, 0); }
+}
+@keyframes pulse-glow-emerald {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 160, 0.50); }
+  50%       { box-shadow: 0 0 0 7px rgba(0, 229, 160, 0); }
+}
+
+/* ── Brand shimmer ── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* ── Entry animations ── */
+@keyframes slide-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Status dot ── */
+@keyframes dot-pulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.5); opacity: 0.65; }
+}
+
+/* ── Token bar fill ── */
+@keyframes bar-fill {
+  from { width: 0; }
+  to   { width: var(--bar-w); }
+}
+
+/* ── Aurora background rotation ── */
+@keyframes aurora {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* ── Gentle float for idle elements ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
+/* ── Button click ripple ── */
+@keyframes ripple {
+  0%   { transform: scale(0); opacity: 0.45; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* ── Organic border morph ── */
+@keyframes morph-border {
+  0%   { border-radius: 14px 18px 14px 18px; }
+  25%  { border-radius: 18px 14px 18px 14px; }
+  50%  { border-radius: 16px 20px 16px 12px; }
+  75%  { border-radius: 12px 16px 20px 16px; }
+  100% { border-radius: 14px 18px 14px 18px; }
+}
+
+/* ── Glass refraction shimmer on panels ── */
+@keyframes glass-refract {
+  0%   { background-position: -300% 0; }
+  100% { background-position:  300% 0; }
+}
+
+/* ── Theme toggle flip ── */
+@keyframes theme-flip {
+  0%   { transform: rotateY(0deg)   scale(1); }
+  50%  { transform: rotateY(90deg)  scale(0.95); }
+  100% { transform: rotateY(0deg)   scale(1); }
+}
+
+/* ── Breathing glow for active panels ── */
+@keyframes breathe {
+  0%, 100% { box-shadow: var(--glow-violet); }
+  50%       { box-shadow: var(--glow-cyan); }
+}

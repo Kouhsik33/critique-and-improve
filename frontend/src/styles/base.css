@@ -1,0 +1,81 @@
+/* ═══════════════════════════════════════════════
+   BASE  ·  Reset, body, scrollbar, utilities
+   ═══════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: var(--text-base);
+  line-height: var(--line-height);
+  color: var(--text);
+  background: 
+    url("/dusty-blue-2.avif");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Smooth theme transitions */
+  transition:
+    background 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    color      0.35s ease;
+}
+
+a { color: inherit; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* ── Utilities ── */
+.mono  { font-family: var(--mono); }
+.muted { color: var(--muted); }
+
+/* ── Responsive ── */
+@media (max-width: 1060px) {
+  .graph-wrap {
+    height: 520px;
+    min-height: 420px;
+  }
+  .feedback-grid {
+    grid-template-columns: 1fr;
+  }
+  .feedback-list {
+    max-height: 180px;
+  }
+  .grid-two {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar-inner {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .brand {
+    min-width: unset;
+  }
+  .kpi {
+    grid-template-columns: 1fr;
+  }
+  .status-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

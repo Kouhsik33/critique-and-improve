@@ -1,0 +1,206 @@
+/* ─────────────────────────────────────────────
+   Google Fonts — Space Grotesk + Fira Code
+   ───────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS  ·  60 | 30 | 10 colour rule
+   ═══════════════════════════════════════════════ */
+
+/* ── DARK THEME (default) ──────────────────── */
+:root,
+[data-theme="dark"] {
+  /* 60 % — Dominant : deep void-navy */
+  --bg0: #070a12;
+  --bg1: #0b1020;
+  --bg2: #0e1528;
+
+  /* 30 % — Secondary : navy-slate surfaces */
+  --surface0: #131a2c;
+  --surface1: #192034;
+  --surface2: #222a44;
+  --surface3: #2b3354;
+
+  /* 10 % — Accent : vibrant & purposeful */
+  --accent:          #6c63ff;
+  --accent-cyan:     #00d4ff;
+  --accent-coral:    #ff6b6b;
+  --accent-gold:     #ffb347;
+  --accent-emerald:  #00e5a0;
+  --accent-lavender: #a78bff;
+
+  /* Semantic aliases */
+  --red:    var(--accent-coral);
+  --blue:   var(--accent-cyan);
+  --green:  var(--accent-emerald);
+  --amber:  var(--accent-gold);
+  --purple: var(--accent-lavender);
+
+  /* Text hierarchy */
+  --text:           rgba(225, 232, 255, 0.93);
+  --text-secondary: rgba(190, 200, 240, 0.78);
+  --muted:          rgba(140, 155, 200, 0.58);
+  --subtle:         rgba(100, 115, 160, 0.42);
+
+  /* Surface semantics */
+  --panel:          rgba(19, 26, 44, 0.78);
+  --panel-header:   rgba(25, 32, 52, 0.65);
+  --panel-hover:    rgba(34, 42, 68, 0.80);
+  --border:         rgba(108, 99, 255, 0.14);
+  --border-subtle:  rgba(255, 255, 255, 0.06);
+  --border-focus:   rgba(108, 99, 255, 0.55);
+
+  /* Input / interactive */
+  --input-bg:       rgba(19, 26, 44, 0.65);
+  --input-bg-focus: rgba(25, 32, 52, 0.85);
+  --btn-bg:         rgba(34, 42, 68, 0.72);
+  --btn-bg-hover:   rgba(42, 52, 82, 0.90);
+
+  /* Shadows & Glows */
+  --shadow-sm:      0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow:         0 8px 32px rgba(0, 0, 0, 0.50);
+  --shadow-lg:      0 20px 60px rgba(0, 0, 0, 0.60);
+  --glow-violet:    0 0 20px rgba(108, 99, 255, 0.30),  0 0 60px rgba(108, 99, 255, 0.10);
+  --glow-cyan:      0 0 20px rgba(0, 212, 255, 0.30),   0 0 60px rgba(0, 212, 255, 0.08);
+  --glow-coral:     0 0 20px rgba(255, 107, 107, 0.30),  0 0 60px rgba(255, 107, 107, 0.08);
+  --glow-gold:      0 0 20px rgba(255, 179, 71, 0.30),   0 0 60px rgba(255, 179, 71, 0.08);
+  --glow-emerald:   0 0 20px rgba(0, 229, 160, 0.30),   0 0 60px rgba(0, 229, 160, 0.08);
+
+  /* Body aurora gradient */
+  --body-aurora-1:  rgba(108, 99, 255, 0.10);
+  --body-aurora-2:  rgba(0, 212, 255, 0.07);
+  --body-aurora-3:  rgba(0, 229, 160, 0.05);
+  --body-aurora-4:  rgba(255, 107, 107, 0.04);
+
+  /* Topbar */
+  --topbar-bg:      rgba(11, 16, 32, 0.80);
+  --topbar-border:  rgba(108, 99, 255, 0.18);
+
+  /* Scrollbar */
+  --scrollbar-thumb:       rgba(108, 99, 255, 0.28);
+  --scrollbar-thumb-hover: rgba(108, 99, 255, 0.50);
+
+  /* Chart / graph node modal */
+  --modal-bg:       rgba(9, 13, 24, 0.96);
+  --chart-grid:     rgba(108, 99, 255, 0.08);
+  --chart-axis:     rgba(108, 99, 255, 0.12);
+  --chart-tick:     rgba(140, 155, 200, 0.50);
+
+  /* Misc */
+  --pill-bg:        rgba(19, 26, 44, 0.60);
+  --tag-bg:         rgba(19, 26, 44, 0.72);
+  --kpi-overlay:    rgba(108, 99, 255, 0.04);
+  --shimmer-white:  rgba(255, 255, 255, 0.06);
+  --dot-default:    rgba(180, 195, 240, 0.28);
+
+  /* -- colour scheme hint for browser UI -- */
+  color-scheme: dark;
+}
+
+/* ── LIGHT THEME ───────────────────────────── */
+[data-theme="light"] {
+  /* 60 % — Dominant : warm pearl-fog */
+  --bg0: #f8f9fc;
+  --bg1: #f1f3f8;
+  --bg2: #e9ecf4;
+
+  /* 30 % — Secondary : dove-grey surfaces */
+  --surface0: #ffffff;
+  --surface1: #f6f7fb;
+  --surface2: #eceef6;
+  --surface3: #e0e3ef;
+
+  /* 10 % — Accent : deeper for contrast on light */
+  --accent:          #5046e5;
+  --accent-cyan:     #0891b2;
+  --accent-coral:    #dc2626;
+  --accent-gold:     #d97706;
+  --accent-emerald:  #059669;
+  --accent-lavender: #7c3aed;
+
+  /* Semantic aliases */
+  --red:    var(--accent-coral);
+  --blue:   var(--accent-cyan);
+  --green:  var(--accent-emerald);
+  --amber:  var(--accent-gold);
+  --purple: var(--accent-lavender);
+
+  /* Text hierarchy */
+  --text:           rgba(15, 23, 42, 0.90);
+  --text-secondary: rgba(30, 41, 59, 0.72);
+  --muted:          rgba(71, 85, 105, 0.62);
+  --subtle:         rgba(100, 116, 139, 0.45);
+
+  /* Surface semantics */
+  --panel:          rgba(255, 255, 255, 0.82);
+  --panel-header:   rgba(246, 247, 251, 0.90);
+  --panel-hover:    rgba(236, 238, 246, 0.85);
+  --border:         rgba(80, 70, 229, 0.12);
+  --border-subtle:  rgba(15, 23, 42, 0.06);
+  --border-focus:   rgba(80, 70, 229, 0.50);
+
+  /* Input / interactive */
+  --input-bg:       rgba(255, 255, 255, 0.80);
+  --input-bg-focus: rgba(255, 255, 255, 0.95);
+  --btn-bg:         rgba(236, 238, 246, 0.80);
+  --btn-bg-hover:   rgba(224, 227, 239, 0.95);
+
+  /* Shadows & Glows */
+  --shadow-sm:      0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow:         0 8px 32px rgba(15, 23, 42, 0.10);
+  --shadow-lg:      0 20px 60px rgba(15, 23, 42, 0.14);
+  --glow-violet:    0 0 16px rgba(80, 70, 229, 0.14),  0 0 48px rgba(80, 70, 229, 0.05);
+  --glow-cyan:      0 0 16px rgba(8, 145, 178, 0.14),  0 0 48px rgba(8, 145, 178, 0.05);
+  --glow-coral:     0 0 16px rgba(220, 38, 38, 0.14),  0 0 48px rgba(220, 38, 38, 0.05);
+  --glow-gold:      0 0 16px rgba(217, 119, 6, 0.14),  0 0 48px rgba(217, 119, 6, 0.05);
+  --glow-emerald:   0 0 16px rgba(5, 150, 105, 0.14),  0 0 48px rgba(5, 150, 105, 0.05);
+
+  /* Body aurora gradient */
+  --body-aurora-1:  rgba(80, 70, 229, 0.04);
+  --body-aurora-2:  rgba(8, 145, 178, 0.03);
+  --body-aurora-3:  rgba(5, 150, 105, 0.03);
+  --body-aurora-4:  rgba(220, 38, 38, 0.02);
+
+  /* Topbar */
+  --topbar-bg:      rgba(255, 255, 255, 0.85);
+  --topbar-border:  rgba(80, 70, 229, 0.12);
+
+  /* Scrollbar */
+  --scrollbar-thumb:       rgba(80, 70, 229, 0.20);
+  --scrollbar-thumb-hover: rgba(80, 70, 229, 0.38);
+
+  /* Chart / graph node modal */
+  --modal-bg:       rgba(255, 255, 255, 0.97);
+  --chart-grid:     rgba(80, 70, 229, 0.06);
+  --chart-axis:     rgba(80, 70, 229, 0.10);
+  --chart-tick:     rgba(71, 85, 105, 0.50);
+
+  /* Misc */
+  --pill-bg:        rgba(236, 238, 246, 0.70);
+  --tag-bg:         rgba(236, 238, 246, 0.80);
+  --kpi-overlay:    rgba(80, 70, 229, 0.03);
+  --shimmer-white:  rgba(0, 0, 0, 0.03);
+  --dot-default:    rgba(71, 85, 105, 0.22);
+
+  color-scheme: light;
+}
+
+/* ═══════════════════════════════════════════════
+   TYPOGRAPHY  ·  Golden Ratio (φ = 1.618)
+   ═══════════════════════════════════════════════ */
+:root {
+  --text-xs:    10px;
+  --text-sm:    12px;
+  --text-base:  16px;
+  --text-md:    20px;
+  --text-lg:    26px;
+  --text-xl:    42px;
+  --line-height: 1.618;
+
+  --sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius:    14px;
+  --radius-sm: 10px;
+  --radius-xs: 7px;
+}

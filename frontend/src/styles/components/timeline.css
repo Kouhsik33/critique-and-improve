@@ -1,0 +1,124 @@
+/* ═══════════════════════════════════════════════
+   AGENT TIMELINE  ·  Step pills & status row
+   ═══════════════════════════════════════════════ */
+
+.timeline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.timeline-step {
+  flex: 1 1 auto;
+  min-width: 130px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: var(--pill-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.24s ease,
+    box-shadow   0.24s ease,
+    background   0.24s ease,
+    transform    0.14s ease;
+}
+
+/* Shimmer sweep on hover */
+.timeline-step::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--shimmer-white), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+.timeline-step:hover::after { transform: translateX(100%); }
+
+/* ── Step type colours ── */
+.timeline-step.generate {
+  border-color: color-mix(in srgb, var(--accent-cyan) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-cyan) 5%,  transparent);
+}
+.timeline-step.generate strong,
+.timeline-step.generate .step-node { color: var(--accent-cyan); }
+
+.timeline-step.attack {
+  border-color: color-mix(in srgb, var(--accent-coral) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-coral) 5%,  transparent);
+}
+.timeline-step.attack strong,
+.timeline-step.attack .step-node { color: var(--accent-coral); }
+
+.timeline-step.disrupt {
+  border-color: color-mix(in srgb, var(--accent-gold) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-gold) 5%,  transparent);
+}
+.timeline-step.disrupt strong,
+.timeline-step.disrupt .step-node { color: var(--accent-gold); }
+
+.timeline-step.merge {
+  border-color: color-mix(in srgb, var(--accent-emerald) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-emerald) 5%,  transparent);
+}
+.timeline-step.merge strong,
+.timeline-step.merge .step-node { color: var(--accent-emerald); }
+
+.timeline-step.judge {
+  border-color: color-mix(in srgb, var(--accent-lavender) 26%, transparent);
+  background:   color-mix(in srgb, var(--accent-lavender) 5%,  transparent);
+}
+.timeline-step.judge strong,
+.timeline-step.judge .step-node { color: var(--accent-lavender); }
+
+/* Step labels */
+.timeline-step strong {
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.step-node {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+/* ── Active states with glow ── */
+.timeline-step.active { transform: translateY(-2px); }
+
+.timeline-step.generate.active {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-cyan) 12%, transparent), var(--glow-cyan);
+  background: color-mix(in srgb, var(--accent-cyan) 10%, transparent);
+  animation: pulse-glow-cyan 2s ease-in-out infinite;
+}
+.timeline-step.attack.active {
+  border-color: var(--accent-coral);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-coral) 12%, transparent), var(--glow-coral);
+  background: color-mix(in srgb, var(--accent-coral) 10%, transparent);
+  animation: pulse-glow-coral 2s ease-in-out infinite;
+}
+.timeline-step.disrupt.active {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-gold) 12%, transparent), var(--glow-gold);
+  background: color-mix(in srgb, var(--accent-gold) 10%, transparent);
+  animation: pulse-glow-gold 2s ease-in-out infinite;
+}
+.timeline-step.merge.active {
+  border-color: var(--accent-emerald);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-emerald) 12%, transparent), var(--glow-emerald);
+  background: color-mix(in srgb, var(--accent-emerald) 10%, transparent);
+  animation: pulse-glow-emerald 2s ease-in-out infinite;
+}
+.timeline-step.judge.active {
+  border-color: var(--accent-lavender);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-lavender) 12%, transparent), var(--glow-violet);
+  background: color-mix(in srgb, var(--accent-lavender) 10%, transparent);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
