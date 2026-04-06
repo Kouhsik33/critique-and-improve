@@ -15,24 +15,36 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 130vh;
+  height: 169vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   padding-top: 120px; /* Space for the initial card stack */
   overflow: visible;
-  background-image: url("/dusty-blue-2.avif");
-  background-size: cover;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("/violet-gradient-2.jpg");
+  background-size: 80%;
   background-position: center;
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(8, 11, 20, 0.4) 100%),
-              linear-gradient(to bottom, transparent 60%, var(--bg0) 100%);
+  background: radial-gradient(circle at center, transparent 0%, rgba(15, 0, 35, 0.45) 100%);
   z-index: 1;
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  pointer-events: none;
 }
 
 .hero-content {
@@ -50,18 +62,35 @@
   text-transform: uppercase;
   letter-spacing: 0.25em;
   margin: 0;
-  background: linear-gradient(135deg, #fff 30%, var(--accent-cyan));
+  /* White → blush → hot magenta → electric violet — all purple family */
+  background: linear-gradient(
+    135deg,
+    #ffffff   0%,
+    #fce4ff  20%,
+    #e040fb  52%,
+    #7c3aed  100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.3));
+  /* Magenta bloom + deep violet halo — no cyan */
+  filter:
+    drop-shadow(0 0 40px rgba(224,  64, 251, 0.60))
+    drop-shadow(0 0 90px rgba(180,  60, 240, 0.22))
+    drop-shadow(0 0 16px rgba(124,  58, 237, 0.40));
 }
 
 .hero-content p {
   font-size: var(--text-md);
-  color: rgba(255, 255, 255, 0.6);
-  margin-top: 1rem;
-  letter-spacing: 0.1em;
+  /* Near-full white with a magenta + violet glow — no black underlay needed */
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow:
+    0 0 20px rgba(224,  64, 251, 0.55),
+    0 0 50px rgba(167, 139, 255, 0.30),
+    0  1px  6px rgba( 60,   0,  90, 0.70);
+  margin-top: 1.2rem;
+  letter-spacing: 0.14em;
+  font-weight: 500;
 }
 
 /* ── Floating Card Stack ── */
@@ -91,7 +120,7 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
   cursor: pointer;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+  transition: scale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), translate 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
   animation: card-float 6s ease-in-out infinite alternate;
   border: none;
   box-shadow: none;
@@ -106,22 +135,27 @@
 }
 
 /* No base nth-child transforms as motion handles it now */
-.hero-card:nth-child(1) { z-index: 10; border-color: var(--accent-cyan); }
+.hero-card:nth-child(5) { z-index: 10; border-color: var(--accent-cyan); }
 .hero-card:nth-child(2) { z-index: 9;  border-color: var(--accent-coral); }
 .hero-card:nth-child(3) { z-index: 8;  border-color: var(--accent-gold); }
 .hero-card:nth-child(4) { z-index: 7;  border-color: var(--accent-emerald); }
-.hero-card:nth-child(5) { z-index: 6;  border-color: var(--accent-lavender); }
+.hero-card:nth-child(1) { z-index: 6;  border-color: var(--accent-lavender); }
+
+.hero-card:nth-child(1):hover { filter: brightness(1.2) drop-shadow(0 0 20px rgba(0, 212, 255, 0.4)); }
+.hero-card:nth-child(2):hover { filter: brightness(1.2) drop-shadow(0 0 20px rgba(255, 107, 107, 0.4)); }
+.hero-card:nth-child(3):hover { filter: brightness(1.2) drop-shadow(0 0 20px rgba(255, 179, 71, 0.4)); }
+.hero-card:nth-child(4):hover { filter: brightness(1.2) drop-shadow(0 0 20px rgba(0, 229, 160, 0.4)); }
+.hero-card:nth-child(5):hover { filter: brightness(1.2) drop-shadow(0 0 20px rgba(167, 139, 255, 0.4)); }
 
 .hero-card:hover {
-  transform: translateY(-20px) scale(1.08) rotate(0deg) !important;
-  z-index: 100;
-  border-color: var(--accent);
-  filter: brightness(1.2) drop-shadow(0 0 20px rgba(108, 99, 255, 0.4));
+  scale: 1.08;
+  translate: 0 -20px;
+  z-index: 100 !important;
 }
 
 @keyframes card-float {
-  from { transform: translateY(0px) rotate(inherit); }
-  to   { transform: translateY(-15px) rotate(inherit); }
+  from { translate: 0 0px; }
+  to   { translate: 0 -15px; }
 }
 
 /* ── Scroll Indicator ── */
@@ -135,6 +169,7 @@
   align-items: center;
   gap: 12px;
   opacity: 0.6;
+  z-index: 2;
 }
 
 .mouse {
@@ -253,10 +288,11 @@
   gap: 16px;
   padding: 24px;
   border-radius: 20px;
-  background: rgba(12, 17, 32, 0.55);
+  background: var(--command-bg);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(108, 99, 255, 0.15);
+  border: 1px solid var(--border-command);
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  transition: background 0.45s ease, border-color 0.35s ease;
 }
 
 .command-prompt {
@@ -270,8 +306,8 @@
   padding: 18px 26px;
   border-radius: 14px;
   border: none;
-  border-bottom: 2px solid rgba(108, 99, 255, 0.35);
-  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 2px solid var(--border-command);
+  background: var(--input-bg);
   color: var(--text);
   font-family: var(--sans);
   font-size: var(--text-base);
@@ -284,13 +320,13 @@
 }
 
 .command-prompt .input::placeholder {
-  color: rgba(180, 185, 220, 0.35);
+  color: var(--subtle);
   font-style: italic;
 }
 
 .command-prompt .input:focus {
   border-bottom-color: var(--accent-cyan);
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--input-bg-focus);
   box-shadow: 0 4px 24px rgba(0, 212, 255, 0.12), inset 0 -1px 0 var(--accent-cyan);
 }
 

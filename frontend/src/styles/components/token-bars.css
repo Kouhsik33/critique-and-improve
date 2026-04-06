@@ -29,7 +29,7 @@
 .token-bar-track {
   height: 6px;
   border-radius: 99px;
-  background: var(--border-subtle);
+  background: var(--token-track);
   overflow: hidden;
   transition: background 0.35s ease;
 }

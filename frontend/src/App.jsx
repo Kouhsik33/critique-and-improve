@@ -11,11 +11,50 @@ import { API_BASE_URL, WS_BASE_URL, runArena } from './services/api.js'
 import { useAgentStream } from './hooks/useAgentStream.js'
 import { useDemoStream } from './hooks/useDemoStream.js'
 
+const HERO_AGENTS = [
+  {
+    id: 'creator',
+    colorClass: 'blue',
+    title: 'creator',
+    image: '/blue-agent.png',
+    description: 'Generates novel concepts, builds core structures, and establishes the functional baseline.'
+  },
+  {
+    id: 'critic',
+    colorClass: 'red',
+    title: 'critic',
+    image: '/red-agent.png',
+    description: 'Identifies flaws, edge cases, and contradictions to ensure robustness and structural integrity.'
+  },
+  {
+    id: 'radical',
+    colorClass: 'amber',
+    title: 'radical',
+    image: '/gold-agent.png',
+    description: 'Injects disruptive perspectives to break conventional thinking and explore unorthodox paradigms.'
+  },
+  {
+    id: 'synthesizer',
+    colorClass: 'green',
+    title: 'synthesizer',
+    image: '/green-agent.png',
+    description: 'Integrates critical feedback with radical reframing to produce a hybrid solution that maintains structural integrity while incorporating novel perspectives, resulting in improved adaptability without sacrificing coherence.'
+  },
+  {
+    id: 'judge',
+    colorClass: 'purple',
+    title: 'judge',
+    image: '/violet-agent.png',
+    description: 'Evaluates competing ideas, weighs evidence impartially, and synthesizes final objective verdicts.'
+  }
+]
+
 function Shell() {
   const { state, dispatch } = useApp()
   const { theme, toggleTheme } = useTheme()
   const [prompt, setPrompt] = useState('')
   const [isStarting, setIsStarting] = useState(false)
+  const [hoveredCard, setHoveredCard] = useState(null)
   const titleRef = useRef(null)
 
   // ── Scroll-driven card transitions ──
@@ -34,7 +73,7 @@ function Shell() {
   const r4 = useTransform(scrollY, [0, 600], [9,   0])
   const r5 = useTransform(scrollY, [0, 600], [-12, 0])
 
-  const yPos = useTransform(scrollY, [0, 900], [0, -50])
+  const yPos = useTransform(scrollY, [0, 900], [0, -99])
 
   const wsUrl = useMemo(() => {
     if (!state.requestId) return null
@@ -105,13 +144,48 @@ function Shell() {
         <div className="hero-overlay" />
 
         {/* Floating card stack — scroll-driven unstack into a row */}
-        <div className="hero-card-stack">
-          <motion.div className="hero-card" style={{ x: x1, rotate: r1, y: yPos }}><img src="/red-agent.png" alt="Agent Logic 1" /></motion.div>
-          <motion.div className="hero-card" style={{ x: x2, rotate: r2, y: yPos }}><img src="/blue-agent.png" alt="Agent Logic 2" /></motion.div>
-          <motion.div className="hero-card" style={{ x: x3, rotate: r3, y: yPos }}><img src="/violet-agent.png" alt="Agent Logic 3" /></motion.div>
-          <motion.div className="hero-card" style={{ x: x4, rotate: r4, y: yPos }}><img src="/gold-agent.png" alt="Agent Logic 4" /></motion.div>
-          <motion.div className="hero-card" style={{ x: x5, rotate: r5, y: yPos }}><img src="/green-agent.png" alt="Agent Logic 5" /></motion.div>
+        <div className="hero-card-stack" onMouseLeave={() => setHoveredCard(null)}>
+          {HERO_AGENTS.map((agent, idx) => {
+            const xs = [x1, x2, x3, x4, x5]
+            const rs = [r1, r2, r3, r4, r5]
+            return (
+              <motion.div
+                key={agent.id}
+                className="hero-card"
+                style={{ x: xs[idx], rotate: rs[idx], y: yPos }}
+                onMouseEnter={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect()
+                  setHoveredCard({
+                    ...agent,
+                    left: rect.left + rect.width / 2 + 10,
+                    top: rect.top + rect.height / 2 + 10,
+                  })
+                }}
+                onMouseMove={(e) => {
+                  setHoveredCard(prev => prev ? { ...prev, left: e.clientX + 18, top: e.clientY + 18 } : null)
+                }}
+                onMouseLeave={() => setHoveredCard(null)}
+              >
+                <img src={agent.image} alt={agent.title} />
+              </motion.div>
+            )
+          })}
         </div>
+
+        {hoveredCard && (
+          <div
+            className="graph-node-modal"
+            style={{ position: 'fixed', left: hoveredCard.left, top: hoveredCard.top, zIndex: 9999 }}
+            role="dialog"
+            aria-label="Agent details"
+          >
+            <div className="graph-node-modal-header">
+              <span className={`dot ${hoveredCard.colorClass}`} />
+              <span className="mono">{hoveredCard.title}</span>
+            </div>
+            <div className="graph-node-modal-body">{hoveredCard.description}</div>
+          </div>
+        )}
 
         <div className="hero-content">
           <h1>Idea Arena</h1>

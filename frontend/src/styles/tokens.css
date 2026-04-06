@@ -5,95 +5,121 @@
 
 /* ═══════════════════════════════════════════════
    DESIGN TOKENS  ·  60 | 30 | 10 colour rule
+   ═══════════════════════════════════════════════
+   To swap the entire palette, edit ONLY the
+   values below — everything else derives from them.
    ═══════════════════════════════════════════════ */
 
 /* ── DARK THEME (default) ──────────────────── */
 :root,
 [data-theme="dark"] {
-  /* 60 % — Dominant : deep void-navy */
-  --bg0: #070a12;
-  --bg1: #0b1020;
-  --bg2: #0e1528;
 
-  /* 30 % — Secondary : navy-slate surfaces */
-  --surface0: #131a2c;
-  --surface1: #192034;
-  --surface2: #222a44;
-  --surface3: #2b3354;
+  /* ── 60 % : Deep Eggplant — void base ──────────────────────────────────
+     Palette left edge: #1e0533 → #2d0a4e → #3a1060
+     These are the page background layers — deepest ink first.          */
+  --bg0: #130120;          /* page void — near-black purple              */
+  --bg1: #1a0530;          /* body canvas — eggplant                     */
+  --bg2: #220a3e;          /* elevated base — deep plum                  */
 
-  /* 10 % — Accent : vibrant & purposeful */
-  --accent:          #6c63ff;
-  --accent-cyan:     #00d4ff;
-  --accent-coral:    #ff6b6b;
-  --accent-gold:     #ffb347;
-  --accent-emerald:  #00e5a0;
-  --accent-lavender: #a78bff;
+  /* ── 30 % : Rich Violet — surfaces ─────────────────────────────────────
+     Palette mid-left: #4a0e8f → #5b17a8 → #6d21c0
+     Panels, cards, and items sit in this range.                         */
+  --surface0: #2d1052;     /* inner containers, timeline items           */
+  --surface1: #38166a;     /* panels, cards                              */
+  --surface2: #441d80;     /* hover states, headers                      */
+  --surface3: #522496;     /* deepest surface accent                     */
 
-  /* Semantic aliases */
+  /* ── 10 % : Vibrant accents — UNTOUCHED ──────────────────────────────── */
+  --accent:          #6c63ff;   /* electric violet  — primary / brand  */
+  --accent-cyan:     #00d4ff;   /* cyan             — creator / info   */
+  --accent-coral:    #ff6b6b;   /* coral-red        — critic / warning */
+  --accent-gold:     #ffb347;   /* amber-gold       — radical / energy */
+  --accent-emerald:  #00e5a0;   /* emerald          — synthesizer / ok */
+  --accent-lavender: #a78bff;   /* soft violet      — judge / subtle   */
+
+  /* ── Semantic colour aliases ── */
   --red:    var(--accent-coral);
   --blue:   var(--accent-cyan);
   --green:  var(--accent-emerald);
   --amber:  var(--accent-gold);
   --purple: var(--accent-lavender);
 
-  /* Text hierarchy */
-  --text:           rgba(225, 232, 255, 0.93);
-  --text-secondary: rgba(190, 200, 240, 0.78);
-  --muted:          rgba(140, 155, 200, 0.58);
-  --subtle:         rgba(100, 115, 160, 0.42);
+  /* ── Text hierarchy ──
+     Shifted slightly warmer / more lavender to match purple bg          */
+  --text:           rgba(235, 225, 255, 0.94);
+  --text-secondary: rgba(205, 190, 245, 0.78);
+  --muted:          rgba(160, 140, 210, 0.62);
+  --subtle:         rgba(120, 100, 175, 0.44);
 
-  /* Surface semantics */
-  --panel:          rgba(19, 26, 44, 0.78);
-  --panel-header:   rgba(25, 32, 52, 0.65);
-  --panel-hover:    rgba(34, 42, 68, 0.80);
-  --border:         rgba(108, 99, 255, 0.14);
+  /* ── Surface semantics — panel / container layer ───────────────────────
+     Palette mid tones: #7b35d4 → #9b4de8 → #b374f0
+     Using rgba so panels are translucent over the purple body bg.       */
+  --panel:          rgba(45, 16,  82,  0.84);   /* main panel bg           */
+  --panel-header:   rgba(56, 22, 106,  0.72);   /* panel header strip      */
+  --panel-hover:    rgba(68, 29, 128,  0.86);   /* panel hover bg          */
+
+  /* ── Container element backgrounds ─────────────────────────────────────
+     Palette right-mid: #c084fc → #d8b4fe transitional tones
+     These are the card / item surfaces — noticeably lighter than panel. */
+  --card-bg:        rgba(38, 12,  72,  0.75);   /* kpi-card, status-card   */
+  --card-bg-hover:  rgba(52, 18,  96,  0.88);   /* card hover              */
+  --item-bg:        rgba(32, 10,  62,  0.68);   /* list-item, timeline-step*/
+  --item-bg-hover:  rgba(46, 16,  86,  0.82);   /* item hover              */
+  --tag-bg:         rgba(42, 14,  80,  0.78);   /* tag, pill               */
+  --pill-bg:        rgba(38, 12,  72,  0.66);   /* pill specific           */
+  --input-bg:       rgba(28,  8,  56,  0.72);   /* text input bg           */
+  --input-bg-focus: rgba(42, 14,  82,  0.90);   /* focused input bg        */
+
+  /* ── Command center container ── */
+  --command-bg:     rgba(22,  6,  44,  0.64);   /* command center shell    */
+  --modal-bg:       rgba(16,  3,  32,  0.97);   /* graph node modal        */
+
+  /* ── Borders ─────────────────────────────────────────────────────────
+     Use the accent violet tinted borders to harmonise with purple bg    */
+  --border:         rgba(150, 100, 255, 0.18);
   --border-subtle:  rgba(255, 255, 255, 0.06);
-  --border-focus:   rgba(108, 99, 255, 0.55);
+  --border-focus:   rgba(150, 100, 255, 0.60);
+  --border-command: rgba(140,  80, 255, 0.20);  /* command-center border   */
 
-  /* Input / interactive */
-  --input-bg:       rgba(19, 26, 44, 0.65);
-  --input-bg-focus: rgba(25, 32, 52, 0.85);
+  /* ── Buttons — UNTOUCHED ── */
   --btn-bg:         rgba(34, 42, 68, 0.72);
   --btn-bg-hover:   rgba(42, 52, 82, 0.90);
 
-  /* Shadows & Glows */
-  --shadow-sm:      0 2px 8px rgba(0, 0, 0, 0.35);
-  --shadow:         0 8px 32px rgba(0, 0, 0, 0.50);
-  --shadow-lg:      0 20px 60px rgba(0, 0, 0, 0.60);
-  --glow-violet:    0 0 20px rgba(108, 99, 255, 0.30),  0 0 60px rgba(108, 99, 255, 0.10);
-  --glow-cyan:      0 0 20px rgba(0, 212, 255, 0.30),   0 0 60px rgba(0, 212, 255, 0.08);
-  --glow-coral:     0 0 20px rgba(255, 107, 107, 0.30),  0 0 60px rgba(255, 107, 107, 0.08);
-  --glow-gold:      0 0 20px rgba(255, 179, 71, 0.30),   0 0 60px rgba(255, 179, 71, 0.08);
-  --glow-emerald:   0 0 20px rgba(0, 229, 160, 0.30),   0 0 60px rgba(0, 229, 160, 0.08);
+  /* ── Shadows & Glows — tuned for purple bg (stronger violet glow) ─── */
+  --shadow-sm:      0 2px 8px   rgba(10,  0, 30,  0.50);
+  --shadow:         0 8px 32px  rgba(10,  0, 30,  0.65);
+  --shadow-lg:      0 20px 60px rgba(10,  0, 30,  0.75);
+  --glow-violet:    0 0 24px rgba(150, 100, 255, 0.40),  0 0 72px rgba(108, 99, 255, 0.14);
+  --glow-cyan:      0 0 22px rgba(0,   212, 255, 0.32),  0 0 64px rgba(0,   212, 255, 0.09);
+  --glow-coral:     0 0 22px rgba(255, 107, 107, 0.32),  0 0 64px rgba(255, 107, 107, 0.09);
+  --glow-gold:      0 0 22px rgba(255, 179, 71,  0.32),  0 0 64px rgba(255, 179, 71,  0.09);
+  --glow-emerald:   0 0 22px rgba(0,   229, 160, 0.32),  0 0 64px rgba(0,   229, 160, 0.09);
 
-  /* Body aurora gradient */
-  --body-aurora-1:  rgba(108, 99, 255, 0.10);
-  --body-aurora-2:  rgba(0, 212, 255, 0.07);
-  --body-aurora-3:  rgba(0, 229, 160, 0.05);
-  --body-aurora-4:  rgba(255, 107, 107, 0.04);
+  /* ── Body aurora — lavender hues pulled from palette right edge ─────── */
+  --body-aurora-1:  rgba(130,  80, 255, 0.14);
+  --body-aurora-2:  rgba(180, 120, 255, 0.09);
+  --body-aurora-3:  rgba(210, 160, 255, 0.06);
+  --body-aurora-4:  rgba(255, 200, 255, 0.04);
 
-  /* Topbar */
-  --topbar-bg:      rgba(11, 16, 32, 0.80);
-  --topbar-border:  rgba(108, 99, 255, 0.18);
+  /* ── Topbar ── */
+  --topbar-bg:      rgba(18,  4,  36,  0.88);
+  --topbar-border:  rgba(150, 100, 255, 0.20);
 
-  /* Scrollbar */
-  --scrollbar-thumb:       rgba(108, 99, 255, 0.28);
-  --scrollbar-thumb-hover: rgba(108, 99, 255, 0.50);
+  /* ── Scrollbar ── */
+  --scrollbar-thumb:       rgba(140, 80, 255, 0.32);
+  --scrollbar-thumb-hover: rgba(160, 110, 255, 0.55);
 
-  /* Chart / graph node modal */
-  --modal-bg:       rgba(9, 13, 24, 0.96);
-  --chart-grid:     rgba(108, 99, 255, 0.08);
-  --chart-axis:     rgba(108, 99, 255, 0.12);
-  --chart-tick:     rgba(140, 155, 200, 0.50);
+  /* ── Chart ── */
+  --chart-grid:     rgba(150, 100, 255, 0.10);
+  --chart-axis:     rgba(150, 100, 255, 0.16);
+  --chart-tick:     rgba(190, 160, 240, 0.55);
 
-  /* Misc */
-  --pill-bg:        rgba(19, 26, 44, 0.60);
-  --tag-bg:         rgba(19, 26, 44, 0.72);
-  --kpi-overlay:    rgba(108, 99, 255, 0.04);
-  --shimmer-white:  rgba(255, 255, 255, 0.06);
-  --dot-default:    rgba(180, 195, 240, 0.28);
+  /* ── Misc helpers ── */
+  --kpi-overlay:    rgba(130, 80, 255, 0.06);
+  --shimmer-white:  rgba(220, 200, 255, 0.06);
+  --dot-default:    rgba(200, 170, 255, 0.30);
+  --token-track:    rgba(255, 255, 255, 0.07);
 
-  /* -- colour scheme hint for browser UI -- */
   color-scheme: dark;
 }
 
@@ -131,21 +157,36 @@
   --muted:          rgba(71, 85, 105, 0.62);
   --subtle:         rgba(100, 116, 139, 0.45);
 
-  /* Surface semantics */
+  /* ── Surface semantics ── */
   --panel:          rgba(255, 255, 255, 0.82);
   --panel-header:   rgba(246, 247, 251, 0.90);
   --panel-hover:    rgba(236, 238, 246, 0.85);
+
+  /* ── Container element backgrounds ── */
+  --card-bg:        rgba(248, 249, 252, 0.85);
+  --card-bg-hover:  rgba(241, 243, 248, 0.95);
+  --item-bg:        rgba(252, 253, 255, 0.78);
+  --item-bg-hover:  rgba(241, 243, 250, 0.92);
+  --tag-bg:         rgba(236, 238, 246, 0.80);
+  --pill-bg:        rgba(236, 238, 246, 0.70);
+  --input-bg:       rgba(255, 255, 255, 0.80);
+  --input-bg-focus: rgba(255, 255, 255, 0.95);
+
+  /* ── Command center container ── */
+  --command-bg:     rgba(243, 245, 250, 0.72);
+  --modal-bg:       rgba(255, 255, 255, 0.97);
+
+  /* ── Borders ── */
   --border:         rgba(80, 70, 229, 0.12);
   --border-subtle:  rgba(15, 23, 42, 0.06);
   --border-focus:   rgba(80, 70, 229, 0.50);
+  --border-command: rgba(80, 70, 229, 0.10);
 
-  /* Input / interactive */
-  --input-bg:       rgba(255, 255, 255, 0.80);
-  --input-bg-focus: rgba(255, 255, 255, 0.95);
+  /* ── Buttons (keep untouched) ── */
   --btn-bg:         rgba(236, 238, 246, 0.80);
   --btn-bg-hover:   rgba(224, 227, 239, 0.95);
 
-  /* Shadows & Glows */
+  /* ── Shadows & Glows ── */
   --shadow-sm:      0 2px 8px rgba(15, 23, 42, 0.06);
   --shadow:         0 8px 32px rgba(15, 23, 42, 0.10);
   --shadow-lg:      0 20px 60px rgba(15, 23, 42, 0.14);
@@ -155,17 +196,17 @@
   --glow-gold:      0 0 16px rgba(217, 119, 6, 0.14),  0 0 48px rgba(217, 119, 6, 0.05);
   --glow-emerald:   0 0 16px rgba(5, 150, 105, 0.14),  0 0 48px rgba(5, 150, 105, 0.05);
 
-  /* Body aurora gradient */
+  /* ── Body aurora ── */
   --body-aurora-1:  rgba(80, 70, 229, 0.04);
   --body-aurora-2:  rgba(8, 145, 178, 0.03);
   --body-aurora-3:  rgba(5, 150, 105, 0.03);
   --body-aurora-4:  rgba(220, 38, 38, 0.02);
 
-  /* Topbar */
+  /* ── Topbar ── */
   --topbar-bg:      rgba(255, 255, 255, 0.85);
   --topbar-border:  rgba(80, 70, 229, 0.12);
 
-  /* Scrollbar */
+  /* ── Scrollbar ── */
   --scrollbar-thumb:       rgba(80, 70, 229, 0.20);
   --scrollbar-thumb-hover: rgba(80, 70, 229, 0.38);
 
