@@ -112,12 +112,19 @@ class DatabaseManager:
         else:
             cls._settings = DatabaseSettings()
         
-        url = (
-            f"postgresql://"
-            f"{cls._settings.db_user}:{cls._settings.db_password}"
-            f"@{cls._settings.db_host}:{cls._settings.db_port}"
-            f"/{cls._settings.db_name}"
-        )
+        db_url = os.getenv("DATABASE_URL")
+        if db_url:
+            # Handle postgres:// vs postgresql:// standard compatibility
+            if db_url.startswith("postgres://"):
+                db_url = db_url.replace("postgres://", "postgresql://", 1)
+            url = db_url
+        else:
+            url = (
+                f"postgresql://"
+                f"{cls._settings.db_user}:{cls._settings.db_password}"
+                f"@{cls._settings.db_host}:{cls._settings.db_port}"
+                f"/{cls._settings.db_name}"
+            )
         
         cls._engine = create_engine(
             url,

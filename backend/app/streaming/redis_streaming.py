@@ -3,6 +3,7 @@ Redis-based streaming for real-time agent events.
 Publishes agent actions and updates to subscribed clients.
 """
 
+import os
 import json
 import asyncio
 from typing import Optional, Dict, Any, Callable, List
@@ -18,6 +19,7 @@ class RedisSettings(BaseSettings):
     """Redis configuration"""
     model_config = ConfigDict(extra="ignore", env_file=".env", case_sensitive=False)
     
+    redis_url: Optional[str] = os.getenv("REDIS_URL")
     redis_host: str = "localhost"
     redis_port: int = 6379
     redis_db: int = 0
@@ -42,10 +44,16 @@ class RedisStreamManager:
     async def connect(self):
         """Connect to Redis"""
         if self._redis is None:
+            if self._settings.redis_url:
+                url = self._settings.redis_url
+            else:
+                url = (
+                    f"redis://:{self._settings.redis_password}@{self._settings.redis_host}:{self._settings.redis_port}/{self._settings.redis_db}"
+                    if self._settings.redis_password
+                    else f"redis://{self._settings.redis_host}:{self._settings.redis_port}/{self._settings.redis_db}"
+                )
             self._redis = await aioredis.from_url(
-                f"redis://:{self._settings.redis_password}@{self._settings.redis_host}:{self._settings.redis_port}/{self._settings.redis_db}"
-                if self._settings.redis_password
-                else f"redis://{self._settings.redis_host}:{self._settings.redis_port}/{self._settings.redis_db}",
+                url,
                 encoding="utf8",
                 decode_responses=True,
             )
